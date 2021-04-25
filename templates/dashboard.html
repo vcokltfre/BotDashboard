@@ -39,6 +39,14 @@
         });
       });
 
+      function betterAlert(message) {
+        const el = document.createElement("div");
+        el.classList.add("modal");
+        el.innerText = message;
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 5000);
+      }
+
       function save() {
         fetch("/config/bot/{{ botid }}/guild/{{ guildid }}", {
           method: "POST",
@@ -47,9 +55,9 @@
           }),
         }).then((res) => {
           if (res.status == 204) {
-            alert("Successfully saved your config!");
+            betterAlert("Successfully saved your config!");
           } else {
-            alert("Something went wrong while saving your config.");
+            betterAlert("Something went wrong while saving your config.");
           }
         });
       }
@@ -89,6 +97,6 @@
 
   #container {
     width: fit-content;
-    height: 50rem;
+    height: 45rem;
   }
 </style>
