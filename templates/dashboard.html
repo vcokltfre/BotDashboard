@@ -46,12 +46,10 @@
             code: window.editor.getValue(),
           }),
         }).then((res) => {
-          switch (res.status) {
-            case 204:
-              alert("Successfully saved your config!");
-              break;
-            default:
-              alert("Something went wrong while saving your config.");
+          if (res.status == 204) {
+            alert("Successfully saved your config!");
+          } else {
+            alert("Something went wrong while saving your config.");
           }
         });
       }
