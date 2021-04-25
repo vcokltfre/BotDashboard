@@ -46,3 +46,9 @@ class Database:
             "SELECT * FROM ConfigAccess WHERE bot_id = $1 AND guild_id = $2 AND member_id = $3;",
             bot, guild, member,
         ))
+
+    async def get_bot(self, bot: int) -> Record:
+        return await self.fetchrow("SELECT * FROM Bots WHERE bot_id = $1;", bot)
+
+    async def get_config(self, guild: int, bot: int) -> Record:
+        return await self.fetchrow("SELECT * FROM Configs WHERE guild_id = $1 AND bot_id = $2;", guild, bot)
