@@ -55,3 +55,23 @@ async def delete_config(guildid: int, botid: int, request: Request) -> Response:
     await request.state.db.api_delete_config(guildid, botid)
 
     return Response(status_code=204)
+
+@router.post("/access/{guildid}/{botid}/{memberid}")
+async def grant_access(guildid: int, botid: int, memberid: int, request: Request) -> Response:
+    """Grant a user access to a guild config."""
+
+    verify(request)
+
+    await request.state.db.api_add_user(guildid, botid, memberid)
+
+    return Response(status_code=202)
+
+@router.delete("/access/{guildid}/{botid}/{memberid}")
+async def revoke_access(guildid: int, botid: int, memberid: int, request: Request) -> Response:
+    """Revoke a user's access to a guild config."""
+
+    verify(request)
+
+    await request.state.db.api_remove_user(guildid, botid, memberid)
+
+    return Response(status_code=204)

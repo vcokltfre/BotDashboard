@@ -69,3 +69,9 @@ class Database:
 
     async def api_delete_config(self, guildid: int, botid: int) -> None:
         await self.execute("DELETE FROM Configs WHERE guild_id = $1 AND bot_id = $2;", guildid, botid)
+
+    async def api_add_user(self, guildid: int, botid: int, member_id: int) -> None:
+        await self.execute("INSERT INTO ConfigAccess VALUES ($1, $2, $3);", guildid, botid, member_id)
+
+    async def api_delete_user(self, guildid: int, botid: int, member_id: int) -> None:
+        await self.execute("DELETE FROM ConfigAccess WHERE guild_id = $1 AND bot_id = $2 AND member_id = $3;", guildid, botid, member_id)
