@@ -9,6 +9,15 @@ class SaveData(BaseModel):
     code: str
 
 
+class BotCreateData(BaseModel):
+    name: str
+
+
+class ConfigCreateData(BaseModel):
+    guildname: str
+    config: str
+
+
 @dataclass
 class AuthState:
     session: str = field(default=None)

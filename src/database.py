@@ -57,3 +57,15 @@ class Database:
 
     async def set_config(self, guild: int, bot: int, data: str) -> None:
         await self.execute("UPDATE Configs SET config = $1 WHERE guild_ID = $2 AND bot_id = $3;", data, guild, bot)
+
+    async def api_create_bot(self, botid: int, botname: str) -> None:
+        pass
+
+    async def api_delete_bot(self, botid: int) -> None:
+        pass
+
+    async def api_create_config(self, guild: int, botid: int, guildname: str, data: str) -> None:
+        pass
+
+    async def api_delete_config(self, guild: int, botid: int) -> None:
+        pass

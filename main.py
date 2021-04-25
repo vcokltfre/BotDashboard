@@ -6,7 +6,7 @@ from aiohttp import ClientSession
 
 from src.database import Database
 from src.models import AuthState
-from src.routers import dash_router, oauth_router
+from src.routers import dash_router, oauth_router, api_router
 
 
 load_dotenv()
@@ -15,6 +15,7 @@ app = FastAPI(docs_url=None)
 app.mount("/static", StaticFiles(directory="static"), "static")
 app.include_router(dash_router)
 app.include_router(oauth_router)
+app.include_router(api_router)
 
 session = ClientSession()
 db = Database()
