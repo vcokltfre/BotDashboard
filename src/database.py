@@ -52,3 +52,6 @@ class Database:
 
     async def get_config(self, guild: int, bot: int) -> Record:
         return await self.fetchrow("SELECT * FROM Configs WHERE guild_id = $1 AND bot_id = $2;", guild, bot)
+
+    async def set_config(self, guild: int, bot: int, data: str) -> None:
+        await self.execute("UPDATE Configs SET config = $1 WHERE guild_ID = $2 AND bot_id = $3;", data, guild, bot)
