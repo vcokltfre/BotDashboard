@@ -40,3 +40,9 @@ class Database:
     async def create_session(self, id: str, member_id: int, expire: int = 3600) -> Record:
         await self.execute("DELETE FROM DiscordSessions WHERE member_id = $1;", member_id)
         await self.execute("INSERT INTO DiscordSessions VALUES ($1, $2, $3);", id, member_id, (datetime.utcnow() + timedelta(seconds=expire)))
+
+    async def get_access(self, bot: int, guild: int, member: int) -> bool:
+        return bool(await self.fetchrow(
+            "SELECT * FROM ConfigAccess WHERE bot_id = $1 AND guild_id = $2 AND member_id = $3;",
+            bot, guild, member,
+        ))
