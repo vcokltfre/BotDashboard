@@ -19,6 +19,8 @@ class Database:
         with open("./data/init.sql") as f:
             await self.execute(f.read())
 
+        self.owners = [int(u) for u in getenv("STAFF", "").split(";") if u]
+
     async def execute(self, query: str, *args):
         async with self.pool.acquire() as conn:
             await conn.execute(query, *args)
@@ -42,7 +44,7 @@ class Database:
         await self.execute("INSERT INTO DiscordSessions VALUES ($1, $2, $3);", id, member_id, (datetime.utcnow() + timedelta(seconds=expire)))
 
     async def get_access(self, bot: int, guild: int, member: int) -> bool:
-        return bool(await self.fetchrow(
+        return member in self.owners or bool(await self.fetchrow(
             "SELECT * FROM ConfigAccess WHERE bot_id = $1 AND guild_id = $2 AND member_id = $3;",
             bot, guild, member,
         ))
