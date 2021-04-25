@@ -26,6 +26,9 @@ async def dashboard(botid: int, guildid: int, request: Request) -> Union[HTMLRes
     bot = await request.state.db.get_bot(botid)
     config = await request.state.db.get_config(guildid, botid)
 
+    if not (bot and config):
+        return HTTPException(404)
+
     resp = templates.TemplateResponse("dashboard.html", {
         "request": request,
         "botname": bot["bot_name"],
