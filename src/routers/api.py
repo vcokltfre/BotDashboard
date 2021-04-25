@@ -33,6 +33,19 @@ async def delete_bot(botid: int, request: Request) -> Response:
 
     return Response(status_code=204)
 
+@router.get("/configs/{guildid}/{botid}")
+async def get_config(guildid: int, botid: int, request: Request) -> dict:
+    """Get the content of a bot's guild config."""
+
+    verify(request)
+
+    config = await request.state.db.get_config(guildid, botid)
+
+    if not config:
+        return Response(status_code=404)
+
+    return dict(data=config["config"])
+
 @router.post("/configs/{guildid}/{botid}")
 async def create_config(guildid: int, botid: int, data: ConfigCreateData, request: Request) -> Response:
     """Create a new bot config."""
