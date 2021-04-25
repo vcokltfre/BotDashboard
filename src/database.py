@@ -32,10 +32,10 @@ class Database:
             return await conn.fetch(query, *args)
 
     async def get_session(self, id: str) -> Record:
-        return await self.fetch("SELECT * FROM DiscordSessions WHERE id = $1 AND valid_until < $2;", id, datetime.utcnow())
+        return await self.fetchrow("SELECT * FROM DiscordSessions WHERE id = $1 AND valid_until > $2;", id, datetime.utcnow())
 
     async def get_session_member_id(self, id: int) -> Record:
-        return await self.fetch("SELECT * FROM DiscordSessions WHERE member_id = $1 AND valid_until < $2;", id, datetime.utcnow())
+        return await self.fetchrow("SELECT * FROM DiscordSessions WHERE member_id = $1 AND valid_until > $2;", id, datetime.utcnow())
 
     async def create_session(self, id: str, member_id: int, expire: int = 3600) -> Record:
         await self.execute("DELETE FROM DiscordSessions WHERE member_id = $1;", member_id)
