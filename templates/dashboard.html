@@ -20,7 +20,7 @@
       require.config({ paths: { vs: "/static/monaco-editor/min/vs" } });
 
       async function getContent() {
-        const response = await fetch("/raw/{{ botid }}/{{ guildid }}");
+        const response = await fetch("/config/bot/{{ botid }}/guild/{{ guildid }}/data");
         return response.json();
       }
 

@@ -47,3 +47,15 @@ async def dashboard_save(botid: int, guildid: int, data: SaveData, request: Requ
     await request.state.db.set_config(guildid, botid, data.code)
 
     return Response(status_code=204)
+
+@router.get("/bot/{botid}/guild/{guildid}/data")
+async def get_raw_data(botid: int, guildid: int, request: Request) -> Response:
+    if not request.state.authstate.user:
+        raise HTTPException(401, "Not authorized.")
+
+    if not await request.state.db.get_access(botid, guildid, request.state.authstate.user):
+        raise HTTPException(403, "You are not authorized to access this resource.")
+
+    config = await request.state.db.get_config(guildid, botid)
+
+    return dict(data=config["config"])
