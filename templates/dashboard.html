@@ -56,6 +56,8 @@
         }).then((res) => {
           if (res.status == 204) {
             betterAlert("Successfully saved your config!");
+          } else if (res.status == 429) {
+            alert("Woah there! Slow down, you're saving too quickly!");
           } else {
             betterAlert("Something went wrong while saving your config.");
           }

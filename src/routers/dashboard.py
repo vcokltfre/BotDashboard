@@ -7,10 +7,12 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
 
 from src.models import SaveData
+from src.limiter import Ratelimiter
 
 
 router = APIRouter(prefix="/config")
 templates = Jinja2Templates(directory="templates")
+limiter = Ratelimiter(5)
 
 
 @router.get("/bot/{botid}/guild/{guildid}")
@@ -46,6 +48,9 @@ async def dashboard_save(botid: int, guildid: int, data: SaveData, request: Requ
 
     if not await request.state.db.get_access(botid, guildid, request.state.authstate.user):
         raise HTTPException(403, "You are not authorized to access this resource.")
+
+    if limiter.trigger(request.state.authstate.user):
+        raise HTTPException(429)
 
     await request.state.db.set_config(guildid, botid, data.code)
 
