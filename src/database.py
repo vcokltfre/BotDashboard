@@ -1,7 +1,7 @@
-from asyncpg import create_pool
 from os import getenv
+from datetime import datetime, timedelta
 
-from loguru import logger
+from asyncpg import create_pool, Record
 
 
 class Database:
@@ -30,3 +30,13 @@ class Database:
     async def fetch(self, query: str, *args):
         async with self.pool.acquire() as conn:
             return await conn.fetch(query, *args)
+
+    async def get_session(self, id: str) -> Record:
+        return await self.fetch("SELECT * FROM DiscordSession WHERE id = $1 AND valid_until < $2;", id, datetime.utcnow())
+
+    async def get_session_member_id(self, id: int) -> Record:
+        return await self.fetch("SELECT * FROM DiscordSession WHERE member_id = $1 AND valid_until < $2;", id, datetime.utcnow())
+
+    async def create_session(self, id: str, member_id: int, expire: int = 3600) -> Record:
+        await self.execute("DELETE FROM DiscordSession WHERE member_id = $1;", member_id)
+        await self.execute("INSERT INTO DiscordSession VALUES ($1, $2, $3);", id, member_id, (datetime.utcnow() + timedelta(seconds=expire)))
