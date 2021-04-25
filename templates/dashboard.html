@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap"
+      rel="stylesheet"
+    />
+    <title>{{ title }}</title>
+  </head>
+
+  <body>
+    <h1>Configuring {{ botname }} for {{ guildname }}</h1>
+    <button onclick="save()">Save</button>
+
+    <div class="editor"><div id="container"></div></div>
+    <script src="/static/monaco-editor/min/vs/loader.js"></script>
+
+    <script>
+      require.config({ paths: { vs: "/static/monaco-editor/min/vs" } });
+
+      async function getContent() {
+        const response = await fetch("/raw/{{ botid }}/{{ guildid }}");
+        return response.json();
+      }
+
+      getContent().then((data) => {
+        require(["vs/editor/editor.main"], function () {
+          var editor = monaco.editor.create(
+            document.getElementById("container"),
+            {
+              value: data.data,
+              language: "yaml",
+              theme: "vs-dark",
+              tabSize: 2,
+            }
+          );
+          window.editor = editor;
+        });
+      });
+
+      function save() {
+        fetch("/config/bot/{{ botid }}/guild/{{ guildid }}", {
+          method: "POST",
+          body: JSON.stringify({
+            code: window.editor.getValue(),
+          }),
+        }).then((res) => {
+          switch (res.status) {
+            case 204:
+              alert("Successfully saved your config!");
+              break;
+            default:
+              alert("Something went wrong while saving your config.");
+          }
+        });
+      }
+
+      window.addEventListener("keydown", function (event) {
+        if (event.ctrlKey || event.metaKey) {
+          if (String.fromCharCode(event.which).toLowerCase() == "s") {
+            event.preventDefault();
+            save();
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
+
+<style>
+  body {
+    background: #3e3e3e;
+    color: #87ceeb;
+    font-family: "Roboto", sans-serif;
+    font-size: 1.2rem;
+  }
+
+  button {
+    position: absolute;
+    top: 32px;
+    right: 32px;
+    font-size: 18px;
+  }
+
+  .editor {
+    background: #1e1e1e;
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  #container {
+    width: fit-content;
+    height: 50rem;
+  }
+</style>
