@@ -54,12 +54,18 @@
             code: window.editor.getValue(),
           }),
         }).then((res) => {
-          if (res.status == 204) {
-            betterAlert("Successfully saved your config!");
-          } else if (res.status == 429) {
-            alert("Woah there! Slow down, you're saving too quickly!");
-          } else {
-            betterAlert("Something went wrong while saving your config.");
+          switch (res.status) {
+            case 204:
+              betterAlert("Successfully saved your config!");
+              break
+            case 429:
+              betterAlert("Woah there! Slow down, you're saving too quickly!");
+              break
+            case 401:
+              betterAlert("Looks like your session expired! Refresh the page to continue.")
+              break
+            default:
+              betterAlert("Something went wrong while saving your config.");
           }
         });
       }
@@ -99,6 +105,41 @@
 
   #container {
     width: fit-content;
-    height: 45rem;
+    height: 48rem;
+  }
+
+  @keyframes slide-in {
+    0% {
+      transform: translateX(calc(100% + 1rem));
+      opacity: 0;
+    }
+
+    10% {
+      transform: translateX(0%);
+      opacity: 1;
+    }
+
+    90% {
+      transform: translateX(0%);
+      opacity: 1;
+    }
+
+    100% {
+      transform: translateX(calc(100% + 1rem));
+      opacity: 0;
+    }
+  }
+
+  .modal {
+    position: fixed;
+    display: inline;
+    padding: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    background: black;
+    color: white;
+    white-space: pre-wrap;
+    animation: slide-in 5s ease-in-out 0ms 1 forwards;
+    border-radius: 8px;
   }
 </style>
