@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "botdashboard"
+version = "1.0.0"
+description = "A web yaml editor for bots"
+authors = ["vcokltfre <vcokltfre@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+fastapi = "^0.63.0"
+aiofiles = "^0.6.0"
+uvicorn = "^0.13.4"
+Jinja2 = "^2.11.3"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
