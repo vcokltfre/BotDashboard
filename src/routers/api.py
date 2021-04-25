@@ -10,11 +10,11 @@ from src.models import BotCreateData, ConfigCreateData
 router = APIRouter(prefix="/api")
 
 def verify(request: Request) -> None:
-    if request.get("X-Api-Token", None) != getenv("API_TOKEN"):
+    if request.headers.get("X-Api-Token", None) != getenv("API_TOKEN"):
         raise HTTPException(401)
 
-@router.post("/bots/{botid}/{botname}")
-async def create_bot(botid: int, botname: str, data: BotCreateData, request: Request) -> Response:
+@router.post("/bots/{botid}")
+async def create_bot(botid: int, data: BotCreateData, request: Request) -> Response:
     """Create a new bot."""
 
     verify(request)
@@ -34,17 +34,20 @@ async def delete_bot(botid: int, request: Request) -> Response:
     return Response(status_code=204)
 
 @router.post("/configs/{guildid}/{botid}")
-async def create_config(guildid: int, botid: str, data: ConfigCreateData, request: Request) -> Response:
+async def create_config(guildid: int, botid: int, data: ConfigCreateData, request: Request) -> Response:
     """Create a new bot config."""
 
     verify(request)
 
-    await request.state.db.api_create_config(guildid, botid, data.guildname, data.config)
+    try:
+        await request.state.db.api_create_config(guildid, botid, data.guildname, data.config)
+    except:
+        raise HTTPException(400, "Bot doesn't exist.")
 
     return Response(status_code=202)
 
 @router.delete("/configs/{guildid}/{botid}")
-async def delete_config(guildid: int, botid: str, request: Request) -> Response:
+async def delete_config(guildid: int, botid: int, request: Request) -> Response:
     """Create a new bot config."""
 
     verify(request)

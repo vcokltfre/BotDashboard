@@ -59,13 +59,13 @@ class Database:
         await self.execute("UPDATE Configs SET config = $1 WHERE guild_ID = $2 AND bot_id = $3;", data, guild, bot)
 
     async def api_create_bot(self, botid: int, botname: str) -> None:
-        pass
+        await self.execute("INSERT INTO Bots VALUES ($1, $2);", botid, botname)
 
     async def api_delete_bot(self, botid: int) -> None:
-        pass
+        await self.execute("DELETE FROM Bots WHERE bot_id = $1;", botid)
 
-    async def api_create_config(self, guild: int, botid: int, guildname: str, data: str) -> None:
-        pass
+    async def api_create_config(self, guildid: int, botid: int, guildname: str, data: str) -> None:
+        await self.execute("INSERT INTO Configs VALUES ($1, $2, $3, $4);", guildid, guildname, botid, data)
 
-    async def api_delete_config(self, guild: int, botid: int) -> None:
-        pass
+    async def api_delete_config(self, guildid: int, botid: int) -> None:
+        await self.execute("DELETE FROM Configs WHERE guild_id = $1 AND bot_id = $2;", guildid, botid)
